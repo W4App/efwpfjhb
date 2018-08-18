@@ -1,0 +1,261 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="jhbModel.Store" Provider="System.Data.SQLite.EF6" ProviderManifestToken="data source=G:\Myprojects\newJhb\newJhb\jhb.db" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Device">
+          <Key>
+            <PropertyRef Name="DevId" />
+          </Key>
+          <Property Name="DevId" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="2147483647" />
+          <Property Name="InUseDt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="PF">
+          <Key>
+            <PropertyRef Name="派发编号" />
+          </Key>
+          <Property Name="派发编号" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="问题编号" Type="integer" />
+          <Property Name="派发日期" Type="datetime" />
+          <Property Name="计划时间" Type="datetime" />
+          <Property Name="设备名称" Type="varchar" MaxLength="2147483647" />
+          <Property Name="存在问题" Type="varchar" MaxLength="2147483647" />
+          <Property Name="天窗需求" Type="varchar" MaxLength="2147483647" />
+          <Property Name="受理单位" Type="varchar" MaxLength="2147483647" />
+          <Property Name="站名" Type="varchar" MaxLength="2147483647" />
+          <Property Name="保留2" Type="varchar" MaxLength="2147483647" />
+          <Property Name="lastEdit" Type="integer" />
+          <Property Name="OpTrack" Type="varchar" MaxLength="2147483647" />
+          <Property Name="ver1" Type="varchar" MaxLength="2147483647" />
+          <Property Name="ver2" Type="varchar" MaxLength="2147483647" />
+          <Property Name="ver3" Type="varchar" MaxLength="2147483647" />
+          <Property Name="var4" Type="varchar" MaxLength="2147483647" />
+        </EntityType>
+        <EntityType Name="TZD">
+          <Key>
+            <PropertyRef Name="流水号" />
+          </Key>
+          <Property Name="流水号" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="派单日期" Type="datetime" />
+          <Property Name="记录" Type="varchar" MaxLength="2147483647" />
+          <Property Name="站名" Type="varchar" MaxLength="2147483647" />
+          <Property Name="受理单位" Type="varchar" MaxLength="2147483647" />
+          <Property Name="lastEdit" Type="integer" />
+          <Property Name="OpTrack" Type="varchar" MaxLength="2147483647" />
+          <Property Name="ver1" Type="varchar" MaxLength="2147483647" />
+          <Property Name="ver2" Type="varchar" MaxLength="2147483647" />
+        </EntityType>
+        <EntityType Name="WT">
+          <Key>
+            <PropertyRef Name="问题编号" />
+          </Key>
+          <Property Name="问题编号" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="站名" Type="varchar" MaxLength="2147483647" />
+          <Property Name="设备名称" Type="varchar" MaxLength="2147483647" Nullable="false" />
+          <Property Name="存在问题" Type="varchar" MaxLength="2147483647" Nullable="false" />
+          <Property Name="发现时间" Type="datetime" />
+          <Property Name="严重程度" Type="varchar" MaxLength="2147483647" />
+          <Property Name="检查人" Type="varchar" MaxLength="2147483647" />
+          <Property Name="整改方案" Type="varchar" MaxLength="2147483647" />
+          <Property Name="受理单位" Type="varchar" MaxLength="2147483647" />
+          <Property Name="天窗需求" Type="varchar" MaxLength="2147483647" />
+          <Property Name="销记" Type="bit" />
+          <Property Name="销记时间" Type="datetime" />
+          <Property Name="完成情况" Type="varchar" MaxLength="2147483647" />
+          <Property Name="整治情况" Type="varchar" MaxLength="2147483647" />
+          <Property Name="整治负责人" Type="varchar" MaxLength="2147483647" />
+          <Property Name="备注" Type="varchar" MaxLength="2147483647" />
+          <Property Name="lastEdit" Type="integer" />
+          <Property Name="OpTrack" Type="varchar" MaxLength="2147483647" />
+          <Property Name="rev1" Type="varchar" MaxLength="2147483647" />
+          <Property Name="ver2" Type="varchar" MaxLength="2147483647" />
+        </EntityType>
+        <EntityContainer Name="jhbModelStoreContainer">
+          <EntitySet Name="Device" EntityType="Self.Device" store:Type="Tables" />
+          <EntitySet Name="PF" EntityType="Self.PF" store:Type="Tables" />
+          <EntitySet Name="TZD" EntityType="Self.TZD" store:Type="Tables" />
+          <EntitySet Name="WT" EntityType="Self.WT" store:Type="Tables" />
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="jhbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="PF">
+          <Key>
+            <PropertyRef Name="派发编号" />
+          </Key>
+          <Property Name="派发编号" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns="http://schemas.microsoft.com/ado/2009/11/edm" />
+          <Property Name="站名" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="false" />
+          <Property Name="问题编号" Type="Int64" />
+          <Property Name="派发日期" Type="DateTime" />
+          <Property Name="计划时间" Type="DateTime" />
+          <Property Name="设备名称" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="false" />
+          <Property Name="存在问题" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="false" />
+          <Property Name="天窗需求" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="false" />
+          <Property Name="受理单位" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="false" />
+          <Property Name="lastEdit" Type="Int64" />
+          <Property Name="保留2" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="false" />
+          <Property Name="OpTrack" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="ver1" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="false" />
+          <Property Name="ver2" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="false" />
+          <Property Name="ver3" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="false" />
+          <Property Name="var4" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="TZD">
+          <Key>
+            <PropertyRef Name="流水号" />
+          </Key>
+          <Property Name="流水号" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns="http://schemas.microsoft.com/ado/2009/11/edm" />
+          <Property Name="站名" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="false" />
+          <Property Name="派单日期" Type="DateTime" />
+          <Property Name="记录" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="false" />
+          <Property Name="受理单位" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="false" />
+          <Property Name="lastEdit" Type="Int64" />
+          <Property Name="OpTrack" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="ver1" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="false" />
+          <Property Name="ver2" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="WT">
+          <Key>
+            <PropertyRef Name="问题编号" />
+          </Key>
+          <Property Name="问题编号" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="站名" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="false" />
+          <Property Name="设备名称" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="存在问题" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="发现时间" Type="DateTime" />
+          <Property Name="严重程度" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="false" />
+          <Property Name="检查人" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="false" />
+          <Property Name="整改方案" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="false" />
+          <Property Name="受理单位" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="false" />
+          <Property Name="天窗需求" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="false" />
+          <Property Name="销记" Type="Boolean" />
+          <Property Name="销记时间" Type="DateTime" />
+          <Property Name="完成情况" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="false" />
+          <Property Name="整治情况" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="false" />
+          <Property Name="整治负责人" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="false" />
+          <Property Name="备注" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="false" />
+          <Property Name="lastEdit" Type="Int64" />
+          <Property Name="OpTrack" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="rev1" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="false" />
+          <Property Name="ver2" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityContainer Name="jhbEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="PFs" EntityType="Self.PF" />
+          <EntitySet Name="TZDs" EntityType="Self.TZD" />
+          <EntitySet Name="WTs" EntityType="Self.WT" />
+          <EntitySet Name="Devices" EntityType="jhbModel.Device" />
+        </EntityContainer>
+        <EntityType Name="Device">
+          <Key>
+            <PropertyRef Name="DevId" />
+          </Key>
+          <Property Name="DevId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="false" />
+          <Property Name="InUseDt" Type="DateTime" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="jhbModelStoreContainer" CdmEntityContainer="jhbEntities">
+          <EntitySetMapping Name="PFs">
+            <EntityTypeMapping TypeName="jhbModel.PF">
+              <MappingFragment StoreEntitySet="PF">
+                <ScalarProperty Name="var4" ColumnName="var4" />
+                <ScalarProperty Name="ver3" ColumnName="ver3" />
+                <ScalarProperty Name="ver2" ColumnName="ver2" />
+                <ScalarProperty Name="ver1" ColumnName="ver1" />
+                <ScalarProperty Name="OpTrack" ColumnName="OpTrack" />
+                <ScalarProperty Name="站名" ColumnName="站名" />
+                <ScalarProperty Name="lastEdit" ColumnName="lastEdit" />
+                <ScalarProperty Name="派发编号" ColumnName="派发编号" />
+                <ScalarProperty Name="问题编号" ColumnName="问题编号" />
+                <ScalarProperty Name="派发日期" ColumnName="派发日期" />
+                <ScalarProperty Name="计划时间" ColumnName="计划时间" />
+                <ScalarProperty Name="设备名称" ColumnName="设备名称" />
+                <ScalarProperty Name="存在问题" ColumnName="存在问题" />
+                <ScalarProperty Name="天窗需求" ColumnName="天窗需求" />
+                <ScalarProperty Name="受理单位" ColumnName="受理单位" />
+                <ScalarProperty Name="保留2" ColumnName="保留2" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TZDs">
+            <EntityTypeMapping TypeName="jhbModel.TZD">
+              <MappingFragment StoreEntitySet="TZD">
+                <ScalarProperty Name="ver2" ColumnName="ver2" />
+                <ScalarProperty Name="ver1" ColumnName="ver1" />
+                <ScalarProperty Name="OpTrack" ColumnName="OpTrack" />
+                <ScalarProperty Name="lastEdit" ColumnName="lastEdit" />
+                <ScalarProperty Name="流水号" ColumnName="流水号" />
+                <ScalarProperty Name="派单日期" ColumnName="派单日期" />
+                <ScalarProperty Name="记录" ColumnName="记录" />
+                <ScalarProperty Name="站名" ColumnName="站名" />
+                <ScalarProperty Name="受理单位" ColumnName="受理单位" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WTs">
+            <EntityTypeMapping TypeName="jhbModel.WT">
+              <MappingFragment StoreEntitySet="WT">
+                <ScalarProperty Name="ver2" ColumnName="ver2" />
+                <ScalarProperty Name="rev1" ColumnName="rev1" />
+                <ScalarProperty Name="OpTrack" ColumnName="OpTrack" />
+                <ScalarProperty Name="lastEdit" ColumnName="lastEdit" />
+                <ScalarProperty Name="销记时间" ColumnName="销记时间" />
+                <ScalarProperty Name="发现时间" ColumnName="发现时间" />
+                <ScalarProperty Name="问题编号" ColumnName="问题编号" />
+                <ScalarProperty Name="站名" ColumnName="站名" />
+                <ScalarProperty Name="设备名称" ColumnName="设备名称" />
+                <ScalarProperty Name="存在问题" ColumnName="存在问题" />
+                <ScalarProperty Name="严重程度" ColumnName="严重程度" />
+                <ScalarProperty Name="检查人" ColumnName="检查人" />
+                <ScalarProperty Name="整改方案" ColumnName="整改方案" />
+                <ScalarProperty Name="受理单位" ColumnName="受理单位" />
+                <ScalarProperty Name="天窗需求" ColumnName="天窗需求" />
+                <ScalarProperty Name="销记" ColumnName="销记" />
+                <ScalarProperty Name="完成情况" ColumnName="完成情况" />
+                <ScalarProperty Name="整治情况" ColumnName="整治情况" />
+                <ScalarProperty Name="整治负责人" ColumnName="整治负责人" />
+                <ScalarProperty Name="备注" ColumnName="备注" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Devices">
+            <EntityTypeMapping TypeName="jhbModel.Device">
+              <MappingFragment StoreEntitySet="Device">
+                <ScalarProperty Name="InUseDt" ColumnName="InUseDt" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="DevId" ColumnName="DevId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="无" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

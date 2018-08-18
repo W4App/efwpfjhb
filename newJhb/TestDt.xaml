@@ -1,0 +1,15 @@
+﻿<Window x:Class="newJhb.TestDt"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="TestDt" Height="300" Width="300">
+    <Grid>
+        <Button Content="Button" HorizontalAlignment="Left" Height="27" Margin="91,217,0,0" VerticalAlignment="Top" Width="128" Click="Button_Click" Background="#FFE6B432"/>
+        <Grid HorizontalAlignment="Left" Height="156" Margin="24,17,0,0" VerticalAlignment="Top" Width="255">
+            <Grid.Background>
+                <ImageBrush ImageSource="Arrow3.ico"/>
+            </Grid.Background>
+            <ToolBar HorizontalAlignment="Left" Height="34" Margin="36,19,0,0" VerticalAlignment="Top" Width="176" Header="ll"/>
+        </Grid>
+
+    </Grid>
+</Window>

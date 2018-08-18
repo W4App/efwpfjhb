@@ -1,0 +1,1222 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"       
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"       
+        xmlns:local="clr-namespace:newJhb"         
+        xmlns:System="clr-namespace:System;assembly=mscorlib"         
+        xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"         
+        x:Class="newJhb.MainWindow"
+        Title="JHBInfomationManager@ak by w_b_an" Height="632" Width="1080" Loaded="Window_Loaded" Icon="Arrow3.ico" Closing="Window_Closing" 
+        >
+    <Window.Resources>
+        <LinearGradientBrush x:Key="grid_spite_brush" EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+            <GradientStop Color="#FF0E0F0F"/>
+            <GradientStop Color="#FFCFCEBD" Offset="0.25"/>
+            <GradientStop Color="#FFD5EBEC" Offset="0.5"/>
+            <GradientStop Color="#FF9EC7CA" Offset="0.75"/>
+            <GradientStop Color="#FF819F9D" Offset="0.95"/>
+        </LinearGradientBrush>
+        <!-- 风格 -->
+        <Style  x:Key="DataGridWrap"   TargetType="{x:Type TextBlock}">
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
+        <!-- 我的转换器  -->
+        <local:BlankDelConvert x:Key="StrBlankConvert"/>
+        <local:Str2Col x:Key="Str2Color"/>
+        <local:bool2Neg x:Key="b2nb"/>
+        <local:bool2Str x:Key="b2str"/>
+        <LinearGradientBrush x:Key="TextBoxBorder" EndPoint="0,20" MappingMode="Absolute" StartPoint="0,0">
+            <GradientStop Color="#ABADB3" Offset="0.05"/>
+            <GradientStop Color="#E2E3EA" Offset="0.07"/>
+            <GradientStop Color="#E3E9EF" Offset="1"/>
+        </LinearGradientBrush>
+        <Style x:Key="ComboBoxEditableTextBox" TargetType="{x:Type TextBox}">
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="AllowDrop" Value="true"/>
+            <Setter Property="MinWidth" Value="0"/>
+            <Setter Property="MinHeight" Value="0"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="ScrollViewer.PanningMode" Value="VerticalFirst"/>
+            <Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+                        <ScrollViewer x:Name="PART_ContentHost" Background="Transparent" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <ControlTemplate x:Key="ComboBoxEditableTemplate" TargetType="{x:Type ComboBox}">
+            <Grid x:Name="Placement" SnapsToDevicePixels="true">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Themes:ListBoxChrome x:Name="Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Grid.ColumnSpan="2" RenderMouseOver="{TemplateBinding IsMouseOver}" RenderFocused="{TemplateBinding IsKeyboardFocusWithin}"/>
+                <TextBox x:Name="PART_EditableTextBox" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource TemplatedParent}}" Margin="{TemplateBinding Padding}" Style="{StaticResource ComboBoxEditableTextBox}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+            </Grid>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsKeyboardFocusWithin" Value="true">
+                    <Setter Property="Foreground" Value="Black"/>
+                </Trigger>
+                <Trigger Property="IsDropDownOpen" Value="true">
+                    <Setter Property="RenderFocused" TargetName="Border" Value="true"/>
+                </Trigger>
+                <Trigger Property="HasItems" Value="false"/>
+                <Trigger Property="IsEnabled" Value="false">
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                    <Setter Property="Background" Value="#FFF4F4F4"/>
+                </Trigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsGrouping" Value="true"/>
+                        <Condition Property="VirtualizingPanel.IsVirtualizingWhenGrouping" Value="false"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
+                </MultiTrigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        <Style x:Key="ComboBoxStyle_TextBox" TargetType="{x:Type ComboBox}">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="Padding" Value="4,3"/>
+            <Setter Property="ScrollViewer.CanContentScroll" Value="true"/>
+            <Setter Property="ScrollViewer.PanningMode" Value="Both"/>
+            <Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ComboBox}">
+                        <Grid x:Name="MainGrid" SnapsToDevicePixels="true">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition MinWidth="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}" Width="0"/>
+                            </Grid.ColumnDefinitions>
+                            <Popup x:Name="PART_Popup" AllowsTransparency="true" Grid.ColumnSpan="2" IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}" Margin="1" PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}" Placement="Bottom">
+                                <Themes:SystemDropShadowChrome x:Name="Shdw" Color="Transparent" MaxHeight="{TemplateBinding MaxDropDownHeight}" MinWidth="{Binding ActualWidth, ElementName=MainGrid}">
+                                    <Border x:Name="DropDownBorder" BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" BorderThickness="1" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
+                                        <ScrollViewer x:Name="DropDownScrollViewer">
+                                            <Grid RenderOptions.ClearTypeHint="Enabled">
+                                                <Canvas HorizontalAlignment="Left" Height="0" VerticalAlignment="Top" Width="0">
+                                                    <Rectangle x:Name="OpaqueRect" Fill="{Binding Background, ElementName=DropDownBorder}" Height="{Binding ActualHeight, ElementName=DropDownBorder}" Width="{Binding ActualWidth, ElementName=DropDownBorder}"/>
+                                                </Canvas>
+                                                <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                            </Grid>
+                                        </ScrollViewer>
+                                    </Border>
+                                </Themes:SystemDropShadowChrome>
+                            </Popup>
+                            <ContentPresenter ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Content="{TemplateBinding SelectionBoxItem}" ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" IsHitTestVisible="false" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="HasDropShadow" SourceName="PART_Popup" Value="true">
+                                <Setter Property="Margin" TargetName="Shdw" Value="0,0,5,5"/>
+                                <Setter Property="Color" TargetName="Shdw" Value="#71000000"/>
+                            </Trigger>
+                            <Trigger Property="HasItems" Value="false">
+                                <Setter Property="Height" TargetName="DropDownBorder" Value="95"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                                <Setter Property="Background" Value="#FFF4F4F4"/>
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsGrouping" Value="true"/>
+                                    <Condition Property="VirtualizingPanel.IsVirtualizingWhenGrouping" Value="false"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
+                            </MultiTrigger>
+                            <Trigger Property="ScrollViewer.CanContentScroll" SourceName="DropDownScrollViewer" Value="false">
+                                <Setter Property="Canvas.Top" TargetName="OpaqueRect" Value="{Binding VerticalOffset, ElementName=DropDownScrollViewer}"/>
+                                <Setter Property="Canvas.Left" TargetName="OpaqueRect" Value="{Binding HorizontalOffset, ElementName=DropDownScrollViewer}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsEditable" Value="true">
+                    <Setter Property="BorderBrush" Value="{StaticResource TextBoxBorder}"/>
+                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
+                    <Setter Property="IsTabStop" Value="false"/>
+                    <Setter Property="Padding" Value="3"/>
+                    <Setter Property="Template" Value="{StaticResource ComboBoxEditableTemplate}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="DatePickerStyle_TextPick_event" TargetType="{x:Type DatePicker}">
+            <Setter Property="Foreground" Value="#FF333333"/>
+            <Setter Property="IsTodayHighlighted" Value="True"/>
+            <Setter Property="SelectedDateFormat" Value="Short"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="2"/>
+            <Setter Property="BorderBrush">
+                <Setter.Value>
+                    <LinearGradientBrush EndPoint=".5,0" StartPoint=".5,1">
+                        <GradientStop Color="#FFA3AEB9" Offset="0"/>
+                        <GradientStop Color="#FF8399A9" Offset="0.375"/>
+                        <GradientStop Color="#FF718597" Offset="0.375"/>
+                        <GradientStop Color="#FF617584" Offset="1"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type DatePicker}">
+                        <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal"/>
+                                    <VisualState x:Name="Disabled">
+                                        <Storyboard>
+                                            <DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="PART_DisabledVisual"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Grid x:Name="PART_Root" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                                <Grid.Resources>
+                                    <SolidColorBrush x:Key="DisabledBrush" Color="#A5FFFFFF"/>
+                                    <ControlTemplate x:Key="DropDownButtonTemplate" TargetType="{x:Type Button}">
+                                        <Grid>
+                                            <VisualStateManager.VisualStateGroups>
+                                                <VisualStateGroup x:Name="CommonStates">
+                                                    <VisualStateGroup.Transitions>
+                                                        <VisualTransition GeneratedDuration="0"/>
+                                                        <VisualTransition GeneratedDuration="0:0:0.1" To="MouseOver"/>
+                                                        <VisualTransition GeneratedDuration="0:0:0.1" To="Pressed"/>
+                                                    </VisualStateGroup.Transitions>
+                                                    <VisualState x:Name="Normal"/>
+                                                    <VisualState x:Name="MouseOver">
+                                                        <Storyboard>
+                                                            <ColorAnimation Duration="0" To="#FF448DCA" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" Storyboard.TargetName="Background"/>
+                                                            <ColorAnimationUsingKeyFrames BeginTime="0" Duration="00:00:00.001" Storyboard.TargetProperty="(Border.Background).(GradientBrush.GradientStops)[3].(GradientStop.Color)" Storyboard.TargetName="BackgroundGradient">
+                                                                <SplineColorKeyFrame KeyTime="0" Value="#7FFFFFFF"/>
+                                                            </ColorAnimationUsingKeyFrames>
+                                                            <ColorAnimationUsingKeyFrames BeginTime="0" Duration="00:00:00.001" Storyboard.TargetProperty="(Border.Background).(GradientBrush.GradientStops)[2].(GradientStop.Color)" Storyboard.TargetName="BackgroundGradient">
+                                                                <SplineColorKeyFrame KeyTime="0" Value="#CCFFFFFF"/>
+                                                            </ColorAnimationUsingKeyFrames>
+                                                            <ColorAnimationUsingKeyFrames BeginTime="0" Duration="00:00:00.001" Storyboard.TargetProperty="(Border.Background).(GradientBrush.GradientStops)[1].(GradientStop.Color)" Storyboard.TargetName="BackgroundGradient">
+                                                                <SplineColorKeyFrame KeyTime="0" Value="#F2FFFFFF"/>
+                                                            </ColorAnimationUsingKeyFrames>
+                                                        </Storyboard>
+                                                    </VisualState>
+                                                    <VisualState x:Name="Pressed">
+                                                        <Storyboard>
+                                                            <ColorAnimationUsingKeyFrames BeginTime="0" Duration="00:00:00.001" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" Storyboard.TargetName="Background">
+                                                                <SplineColorKeyFrame KeyTime="0" Value="#FF448DCA"/>
+                                                            </ColorAnimationUsingKeyFrames>
+                                                            <DoubleAnimationUsingKeyFrames BeginTime="0" Duration="00:00:00.001" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="Highlight">
+                                                                <SplineDoubleKeyFrame KeyTime="0" Value="1"/>
+                                                            </DoubleAnimationUsingKeyFrames>
+                                                            <ColorAnimationUsingKeyFrames BeginTime="0" Duration="00:00:00.001" Storyboard.TargetProperty="(Border.Background).(GradientBrush.GradientStops)[1].(GradientStop.Color)" Storyboard.TargetName="BackgroundGradient">
+                                                                <SplineColorKeyFrame KeyTime="0" Value="#EAFFFFFF"/>
+                                                            </ColorAnimationUsingKeyFrames>
+                                                            <ColorAnimationUsingKeyFrames BeginTime="0" Duration="00:00:00.001" Storyboard.TargetProperty="(Border.Background).(GradientBrush.GradientStops)[2].(GradientStop.Color)" Storyboard.TargetName="BackgroundGradient">
+                                                                <SplineColorKeyFrame KeyTime="0" Value="#C6FFFFFF"/>
+                                                            </ColorAnimationUsingKeyFrames>
+                                                            <ColorAnimationUsingKeyFrames BeginTime="0" Duration="00:00:00.001" Storyboard.TargetProperty="(Border.Background).(GradientBrush.GradientStops)[3].(GradientStop.Color)" Storyboard.TargetName="BackgroundGradient">
+                                                                <SplineColorKeyFrame KeyTime="0" Value="#6BFFFFFF"/>
+                                                            </ColorAnimationUsingKeyFrames>
+                                                            <ColorAnimationUsingKeyFrames BeginTime="0" Duration="00:00:00.001" Storyboard.TargetProperty="(Border.Background).(GradientBrush.GradientStops)[0].(GradientStop.Color)" Storyboard.TargetName="BackgroundGradient">
+                                                                <SplineColorKeyFrame KeyTime="0" Value="#F4FFFFFF"/>
+                                                            </ColorAnimationUsingKeyFrames>
+                                                        </Storyboard>
+                                                    </VisualState>
+                                                    <VisualState x:Name="Disabled"/>
+                                                </VisualStateGroup>
+                                            </VisualStateManager.VisualStateGroups>
+                                            <Grid Background="#11FFFFFF" FlowDirection="LeftToRight" HorizontalAlignment="Center" Height="18" Margin="0" VerticalAlignment="Center" Width="19">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="20*"/>
+                                                    <ColumnDefinition Width="20*"/>
+                                                    <ColumnDefinition Width="20*"/>
+                                                    <ColumnDefinition Width="20*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="23*"/>
+                                                    <RowDefinition Height="19*"/>
+                                                    <RowDefinition Height="19*"/>
+                                                    <RowDefinition Height="19*"/>
+                                                </Grid.RowDefinitions>
+                                                <Border x:Name="Highlight" BorderBrush="#FF45D6FA" BorderThickness="1" Grid.ColumnSpan="4" CornerRadius="0,0,1,1" Margin="-1" Opacity="0" Grid.Row="0" Grid.RowSpan="4"/>
+                                                <Border x:Name="Background" BorderBrush="#FFFFFFFF" BorderThickness="1" Background="#FF1F3B53" Grid.ColumnSpan="4" CornerRadius=".5" Margin="0,-1,0,0" Opacity="1" Grid.Row="1" Grid.RowSpan="3"/>
+                                                <Border x:Name="BackgroundGradient" BorderBrush="#BF000000" BorderThickness="1" Grid.ColumnSpan="4" CornerRadius=".5" Margin="0,-1,0,0" Opacity="1" Grid.Row="1" Grid.RowSpan="3">
+                                                    <Border.Background>
+                                                        <LinearGradientBrush EndPoint=".7,1" StartPoint=".7,0">
+                                                            <GradientStop Color="#FFFFFFFF" Offset="0"/>
+                                                            <GradientStop Color="#F9FFFFFF" Offset="0.375"/>
+                                                            <GradientStop Color="#E5FFFFFF" Offset="0.625"/>
+                                                            <GradientStop Color="#C6FFFFFF" Offset="1"/>
+                                                        </LinearGradientBrush>
+                                                    </Border.Background>
+                                                </Border>
+                                                <Rectangle Grid.ColumnSpan="4" Grid.RowSpan="1" StrokeThickness="1">
+                                                    <Rectangle.Fill>
+                                                        <LinearGradientBrush EndPoint="0.3,-1.1" StartPoint="0.46,1.6">
+                                                            <GradientStop Color="#FF4084BD"/>
+                                                            <GradientStop Color="#FFAFCFEA" Offset="1"/>
+                                                        </LinearGradientBrush>
+                                                    </Rectangle.Fill>
+                                                    <Rectangle.Stroke>
+                                                        <LinearGradientBrush EndPoint="0.48,-1" StartPoint="0.48,1.25">
+                                                            <GradientStop Color="#FF494949"/>
+                                                            <GradientStop Color="#FF9F9F9F" Offset="1"/>
+                                                        </LinearGradientBrush>
+                                                    </Rectangle.Stroke>
+                                                </Rectangle>
+                                                <Path Grid.ColumnSpan="4" Grid.Column="0" Data="M11.426758,8.4305077 L11.749023,8.4305077 L11.749023,16.331387 L10.674805,16.331387 L10.674805,10.299648 L9.0742188,11.298672 L9.0742188,10.294277 C9.4788408,10.090176 9.9094238,9.8090878 10.365967,9.4510155 C10.82251,9.0929432 11.176106,8.7527733 11.426758,8.4305077 z M14.65086,8.4305077 L18.566387,8.4305077 L18.566387,9.3435936 L15.671368,9.3435936 L15.671368,11.255703 C15.936341,11.058764 16.27293,10.960293 16.681133,10.960293 C17.411602,10.960293 17.969301,11.178717 18.354229,11.615566 C18.739157,12.052416 18.931622,12.673672 18.931622,13.479336 C18.931622,15.452317 18.052553,16.438808 16.294415,16.438808 C15.560365,16.438808 14.951641,16.234707 14.468243,15.826504 L14.881817,14.929531 C15.368796,15.326992 15.837872,15.525723 16.289043,15.525723 C17.298809,15.525723 17.803692,14.895514 17.803692,13.635098 C17.803692,12.460618 17.305971,11.873379 16.310528,11.873379 C15.83071,11.873379 15.399232,12.079271 15.016094,12.491055 L14.65086,12.238613 z" Fill="#FF2F2F2F" HorizontalAlignment="Center" Margin="4,3,4,3" Grid.Row="1" Grid.RowSpan="3" RenderTransformOrigin="0.5,0.5" Stretch="Fill" VerticalAlignment="Center"/>
+                                                <Ellipse Grid.ColumnSpan="4" Fill="#FFFFFFFF" HorizontalAlignment="Center" Height="3" StrokeThickness="0" VerticalAlignment="Center" Width="3"/>
+                                                <Border x:Name="DisabledVisual" BorderBrush="#B2FFFFFF" BorderThickness="1" Grid.ColumnSpan="4" CornerRadius="0,0,.5,.5" Opacity="0" Grid.Row="0" Grid.RowSpan="4"/>
+                                            </Grid>
+                                        </Grid>
+                                    </ControlTemplate>
+                                </Grid.Resources>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Button x:Name="PART_Button" Grid.Column="1" Foreground="{TemplateBinding Foreground}" Focusable="False" HorizontalAlignment="Left" Margin="3,0,3,0" Grid.Row="0" Template="{StaticResource DropDownButtonTemplate}" VerticalAlignment="Top" Width="20"/>
+                                <!-- 从这里引出 DatePicker 的文本框 加入自己的特性 -->
+                                <DatePickerTextBox x:Name="PART_TextBox" 
+                                                   Grid.Column="0" 
+                                                   Focusable="{TemplateBinding Focusable}" 
+                                                   HorizontalContentAlignment="Stretch" 
+                                                   Grid.Row="0" 
+                                                   VerticalContentAlignment="Stretch"
+                                                   GotFocus="PART_TextBox_GotFocus" Loaded="PART_TextBox_Loaded"
+                                                   
+                                                   >
+                                    <DatePickerTextBox.Background>
+                                        <SolidColorBrush  x:Name="PART_TextBox_checker" 
+                                                          Color="White"/>
+                                    </DatePickerTextBox.Background>
+                                </DatePickerTextBox>
+                                <!-- ********************************************** -->
+                                <Grid x:Name="PART_DisabledVisual" Grid.ColumnSpan="2" Grid.Column="0" IsHitTestVisible="False" Opacity="0" Grid.Row="0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Rectangle Grid.Column="0" Fill="#A5FFFFFF" RadiusY="1" Grid.Row="0" RadiusX="1"/>
+                                    <Rectangle Grid.Column="1" Fill="#A5FFFFFF" Height="18" Margin="3,0,3,0" RadiusY="1" Grid.Row="0" RadiusX="1" Width="19"/>
+                                    <Popup x:Name="PART_Popup" AllowsTransparency="True" Placement="Bottom" PlacementTarget="{Binding ElementName=PART_TextBox}" StaysOpen="False"/>
+                                </Grid>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <DataTrigger Binding="{Binding Source={x:Static SystemParameters.HighContrast}}" Value="false">
+                                <Setter Property="Foreground" TargetName="PART_TextBox" Value="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}}"/>
+                            </DataTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <SolidColorBrush x:Key="fram_brush" Color="#FF45CC68"/>
+    </Window.Resources>
+    <Grid >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="20*"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="80*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition  Height="90*" />
+            <RowDefinition Height="auto"   />
+        </Grid.RowDefinitions>
+        <GridSplitter Width="5" Grid.Column="1" HorizontalAlignment="Stretch" Background="{DynamicResource grid_spite_brush}"/>
+        <!-- 主窗-->
+        <Grid x:Name="docWin" Grid.Column="2" Margin="5"    >
+            <!-- 这里安排文档窗口. -->
+
+            <FlowDocumentScrollViewer x:Name="topDoc"
+                                      VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollBarVisibility="Disabled" 
+                                      BorderThickness="0" 
+                                      HorizontalContentAlignment="Stretch" 
+                                      VerticalContentAlignment="Stretch" 
+                                      MaxHeight="800" MinHeight="500" 
+                                      >
+                <FlowDocument x:Name="myDoc"  >
+                    <FlowDocument.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Command="ApplicationCommands.Print" />
+                            <MenuItem Command="ApplicationCommands.Copy"/>
+                            <MenuItem Header="导出EXCEL" Click="saveTzd_MenuItem_Click"/>
+                        </ContextMenu>
+                    </FlowDocument.ContextMenu>
+                    <Paragraph>
+                        <InlineUIContainer>
+                            <Border x:Name="docWd"  Margin="40,30,40,0" MaxHeight="1024" MinHeight="1000" >
+                                <Grid >
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="32*"/>
+                                        <RowDefinition Height="22*"/>
+                                        <RowDefinition Height="22*"/>
+                                        <RowDefinition Height="22*"/>
+                                        <RowDefinition Height="270*"/>
+                                        <RowDefinition Height="22*"/>
+                                        <RowDefinition Height="44*"/>
+                                        <RowDefinition Height="44*"/>
+                                        <RowDefinition Height="20*"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid>
+                                        <Border BorderBrush="White" Margin="0,30,0,0">
+                                            <TextBlock  Text="配合作业通知单" HorizontalAlignment="Center" FontSize="22" FontWeight="Bold" Padding="0,0,0,10"/>
+                                        </Border>
+                                    </Grid>
+                                    <Grid  Grid.Row="1"   >
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="50*"/>
+                                            <ColumnDefinition Width="140*"/>
+                                            <ColumnDefinition Width="30*"/>
+                                            <ColumnDefinition Width="80*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Border Grid.Column="0" BorderThickness="1,1,0,0" BorderBrush="Black">
+                                            <TextBlock  Text="施工单位" 
+											FontSize="16" 
+											HorizontalAlignment="Center" 
+											VerticalAlignment="Center" Padding="3"  />
+                                        </Border>
+                                        <Border Grid.Column="1" BorderThickness="1,1,0,0" BorderBrush="Black">
+                                            <TextBox x:Name="tzddocZn" Text="* * *" 
+											FontSize="16" 
+											HorizontalAlignment="Center" 
+											VerticalAlignment="Center" Padding="3" BorderThickness="0"/>
+                                        </Border>
+                                        <Border Grid.Column="2" BorderThickness="1,1,0,0" BorderBrush="Black">
+                                            <TextBlock  Text="日期" 
+											FontSize="16" 
+											HorizontalAlignment="Center" 
+											VerticalAlignment="Center" Padding="3" />
+                                        </Border>
+                                        <Border Grid.Column="3" BorderThickness="1,1,1,0" BorderBrush="Black">
+                                            <TextBlock x:Name="tzddocDate" Text=" * * * " 
+											FontSize="16" 
+											HorizontalAlignment="Center" 
+											VerticalAlignment="Center" Padding="3" />
+                                        </Border>
+
+                                    </Grid>
+
+                                    <Grid  Grid.Row="2" >
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="50*"/>
+                                            <ColumnDefinition Width="80*"/>
+                                            <ColumnDefinition Width="60*"/>
+                                            <ColumnDefinition Width="30*"/>
+                                            <ColumnDefinition Width="80*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border Grid.Column="0" BorderThickness="1,1,0,0" BorderBrush="Black">
+                                            <TextBlock  Text="配合单位" 
+											    FontSize="16" 
+											    HorizontalAlignment="Center" 
+											    VerticalAlignment="Center" Padding="0,3" />
+                                        </Border>
+                                        <Border Grid.Column="1" BorderThickness="1,1,0,0" BorderBrush="Black">
+                                            <TextBox x:Name="tzddocUnit" Text="* * * " 
+											FontSize="16" 
+											HorizontalAlignment="Center" 
+											VerticalAlignment="Center" Padding="0,3" BorderThickness="0"/>
+                                        </Border>
+                                        <Border Grid.Column="2" BorderThickness="1,1,0,0" BorderBrush="Black">
+                                            <TextBlock x:Name="tzddoccz"  Text="* * * " 
+											FontSize="16" 
+											HorizontalAlignment="Center" 
+											VerticalAlignment="Center" Padding="0,3" />
+                                        </Border>
+                                        <Border Grid.Column="3" BorderThickness="1,1,0,0" BorderBrush="Black">
+                                            <TextBlock  Text="地点" 
+											FontSize="16" 
+											HorizontalAlignment="Center" 
+											VerticalAlignment="Center" Padding="0,3" />
+                                        </Border>
+                                        <Border Grid.Column="4" BorderThickness="1,1,1,0" BorderBrush="Black">
+                                            <TextBox  Text="站内" 
+											FontSize="16" Padding="0,3" BorderThickness="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"   />
+                                        </Border>
+                                    </Grid>
+
+                                    <Grid Grid.Row="3">
+                                        <Border Grid.Row="2" BorderBrush="Black" BorderThickness="1" >
+                                            <TextBlock Text="工作内容、影响范围及所需时间:"
+										FontSize="16" 
+										HorizontalAlignment="Left" 
+										VerticalAlignment="Center" Padding="0,3" />
+                                        </Border>
+                                    </Grid>
+                                    <Grid Grid.Row="4" >
+                                        <Border BorderBrush="Black" BorderThickness="1,0" >
+                                            <!-- 重要文本区 -->
+                                            <RichTextBox x:Name="tzdContent" 
+                                                         FontSize="16" AcceptsTab="True" 
+                                                         IsDocumentEnabled="True" 
+                                                         MinHeight="250" MinWidth="300" MaxHeight="800" TextChanged="tzdContent_TextChanged" >
+
+                                            </RichTextBox>
+                                        </Border>
+                                    </Grid>
+                                    <Grid Grid.Row="5" >
+                                        <Border BorderBrush="Black" BorderThickness="1,0">
+                                            <TextBlock Text="施工单位负责人:                                           年        月       日 " FontSize="16" 
+											HorizontalAlignment="Right" 
+											VerticalAlignment="Bottom" Margin="0,0,0,1" Padding="0,3" />
+                                        </Border>
+                                    </Grid>
+                                    <Grid Grid.Row="6">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="80*"/>
+                                            <ColumnDefinition Width="221*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border Grid.Column="0" BorderThickness="1,1,0,0" BorderBrush="Black">
+                                            <TextBlock  Text=" 配合所需时间及日期：" 
+													FontSize="16" 
+													HorizontalAlignment="Left" 
+													VerticalAlignment="Top"  Padding="0,3" Margin="0,0,0,30" />
+                                        </Border>
+                                        <Border Grid.Column="1" BorderThickness="0,1,1,0" BorderBrush="Black">
+                                            <TextBlock  Text="施工单位负责人:                                           年        月       日 "
+													FontSize="16" 
+													HorizontalAlignment="Right" 
+													VerticalAlignment="Bottom" Margin="0,0,0,1" Padding="0,3" />
+                                        </Border>
+                                    </Grid>
+                                    <Grid Grid.Row="7">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="100*"/>
+                                            <ColumnDefinition Width="221*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border Grid.Column="0" BorderThickness="1,1,0,0" BorderBrush="Black">
+                                            <TextBlock  Text=" 配合所需时间及日期：" 
+													FontSize="16" 
+													HorizontalAlignment="Left" 
+													VerticalAlignment="Top" Margin="0,1,0,30" Padding="0,3" />
+                                        </Border>
+                                        <Border Grid.Column="1" BorderThickness="0,1,1,0" BorderBrush="Black">
+                                            <TextBlock  Text="施工单位负责人:                                           年        月       日 " 
+													FontSize="16" 
+													HorizontalAlignment="Right" 
+													VerticalAlignment="Bottom" Margin="0,0,0,1" Padding="0,3" />
+                                        </Border>
+                                    </Grid>
+                                    <Grid Grid.Row="8">
+                                        <Border  BorderThickness="1" BorderBrush="Black" >
+                                            <TextBlock  Text=" 备注:" 
+                                    			FontSize="16" 
+                                    			HorizontalAlignment="Left" 
+                                    			VerticalAlignment="Center" Padding="0,3" />
+                                        </Border>
+                                    </Grid>
+                                </Grid>
+                            </Border>
+                        </InlineUIContainer>
+                    </Paragraph>
+                </FlowDocument>
+            </FlowDocumentScrollViewer>
+        </Grid>
+        <!--  文档结束 . . .  -->
+        <Grid x:Name="view1" Grid.Column="2" Margin="5" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="70*"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="30*"/>
+            </Grid.RowDefinitions>
+            <GridSplitter Height="5" Grid.Row="1" 
+				HorizontalAlignment="Stretch" 
+				Background="{DynamicResource grid_spite_brush}"/>
+            <!--  主窗口显示部分                                 -->
+            <!--查询全部项目-->
+            <DataGrid x:Name="mainGrid" Grid.Row="0" 
+				CanUserAddRows="False"   
+				AutoGenerateColumns="False" AlternationCount="2" 
+				AlternatingRowBackground="Blue"
+				IsReadOnly="True" LoadingRow="mainGrid_LoadingRow" FrozenColumnCount="4"
+                ClipboardCopyMode="None"      
+                RowHeaderWidth="30" SelectionChanged="mainGrid_SelectionChanged" LostFocus="mainGrid_LostFocus"  >
+                <DataGrid.DataContext>
+                    <local:WT/>
+                </DataGrid.DataContext>
+
+
+                <DataGrid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="导出(Query)" Click="main_grid_docXml"/>
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="站名" 
+						Binding="{Binding 站名}"/>
+                    <DataGridTextColumn Header="设备名称" 
+						Binding="{Binding 设备名称}" MaxWidth="120" MinWidth="60" 
+						ElementStyle="{StaticResource DataGridWrap}"/>
+                    <DataGridTextColumn Header="存在问题" 
+						Binding="{Binding 存在问题}"  
+						ElementStyle="{StaticResource DataGridWrap}" MaxWidth="160"/>
+                    <DataGridTextColumn Header="发现时间" 
+						Binding="{Binding 发现时间, StringFormat=\{0:yyyy-M-d\}}" />
+                    <DataGridTemplateColumn x:Name="all_sw" Header="&gt;&gt;"  MaxWidth="30" MinWidth="30">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="{Binding Tag, RelativeSource={RelativeSource Self}}"  Margin="3" Click="SW_Click" Tag="{Binding Header, ElementName=all_sw}" ToolTip="展开"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="检查人" Binding="{Binding 检查人}" />
+                    <DataGridTemplateColumn Header="状态" >
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <TextBlock Text="{Binding 严重程度}" 
+                                               Foreground="{Binding 严重程度, Converter={StaticResource  Str2Color}}">
+                                    </TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="受理单位" Binding="{Binding 受理单位}" />
+                    <DataGridTextColumn x:Name="SW1" Header="整改方案" 
+						Binding="{Binding 整改方案}" CanUserSort="False" Visibility="Collapsed" />
+                    <DataGridTextColumn Header="天窗需求" Binding="{Binding 天窗需求}" />
+                    <DataGridTextColumn x:Name="SW2" Header="销记时间" 
+						Binding="{Binding 销记时间,StringFormat={}{0:yyyy-M-d}}" Visibility="Collapsed" />
+                    <DataGridTextColumn x:Name="SW3" Header="完成情况" 
+						 Binding="{Binding 完成情况, Converter={StaticResource StrBlankConvert}}" CanUserSort="False"
+						Visibility="Collapsed" />
+
+                    <DataGridTextColumn x:Name="SW4" Header="整治情况" 
+						 Binding="{Binding 整治情况, Converter={StaticResource StrBlankConvert}}" CanUserSort="False"
+						Visibility="Collapsed" />
+
+                    <DataGridTextColumn x:Name="SW5" Header="整治负责人" 
+						Binding="{Binding 整治负责人, Converter={StaticResource StrBlankConvert}}" CanUserSort="False"
+						Visibility="Collapsed" />
+
+                    <DataGridTextColumn x:Name="SW6" Header="销记" 
+						Binding="{Binding 销记, Converter={StaticResource b2str}}"
+						Visibility="Collapsed"/>
+
+                    <DataGridTextColumn x:Name="SW7" Header="备注" Binding="{Binding 备注}" CanUserSort="True" Visibility="Collapsed"/>
+                    <DataGridTemplateColumn Header="操作" >
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" >
+                                    <Button Content="派发" 
+										Margin="3" 
+										IsEnabled="{Binding 销记, Converter={StaticResource b2nb}}"
+										Click="MainGrid_Pf"/>
+
+                                    <Button Content="销记" 
+										Margin="3" 
+										IsEnabled="{Binding 销记, Converter={StaticResource b2nb}}"
+										Click="MainGrid_xj" 
+                                            />
+                                    <Button Content="详情" 
+                                            Margin="3" 
+                                            Click="mainGrid_detail"/>
+                                    <Button Content="删除" 
+										Margin="3" 
+										IsEnabled="{Binding 销记, Converter={StaticResource b2nb}}"
+										Click="MainGrid_del" 
+                                            />
+
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+            <!--派发显示项目-->
+
+            <TabControl Grid.Row="2">
+                <TabItem x:Name="tbiPf" Header="派发记录">
+                    <DataGrid x:Name="pfDetial" Grid.Row="2" 
+						AutoGenerateColumns="False" 
+                              IsReadOnly="True" 
+                              LoadingRow="pfDetial_LoadingRow"
+                              ClipboardCopyMode="None">
+                        <DataGrid.DataContext>
+                            <local:PF/>
+                        </DataGrid.DataContext>
+
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="站名" Binding="{Binding 站名}"/>
+                            <DataGridTextColumn Header="派发日期" Binding="{Binding 派发日期,StringFormat={}{0:yyyy-M-d}}"/>
+                            <DataGridTextColumn Header="设备名称" 
+								Binding="{Binding 设备名称}"
+								ElementStyle="{StaticResource DataGridWrap}" 
+								MaxWidth="150" MinWidth="150"/>
+                            <DataGridTextColumn Header="存在问题" 
+								Binding="{Binding 存在问题}"
+								ElementStyle="{StaticResource DataGridWrap}" 
+								MaxWidth="200"/>
+                            <DataGridTextColumn Header="计划时间" Binding="{Binding 计划时间,StringFormat={}{0:yyyy-M-d}}"/>
+                            <DataGridTextColumn Header="整治方案" Binding="{Binding 保留2}"/>
+                            <DataGridTextColumn Header="受理单位" Binding="{Binding 受理单位}"/>
+                            <DataGridTextColumn Header="天窗需求" Binding="{Binding 天窗需求}"/>
+                            <DataGridTemplateColumn Header="操作">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal"  >
+                                            <Button Content="编辑" 
+										        Margin="3" 										 
+										        Click="pf_Edit" IsEnabled="False"/>
+                                            <Button Content="删除" 
+										        Margin="3" 										
+										        Click="pf_Del" 
+                                            />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </TabItem>
+                <TabItem x:Name="tbiTzd" Header="通知单">
+                    <DataGrid x:Name="TzdDetial" Grid.Row="2" 
+						AutoGenerateColumns="False"  
+                              LoadingRow="TzdDetial_LoadingRow"
+                              IsReadOnly="True"
+                              ClipboardCopyMode="None">
+                        <DataGrid.DataContext>
+                            <local:TZD/>
+                        </DataGrid.DataContext>
+
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="站名" Binding="{Binding 站名}"/>
+                            <DataGridTextColumn Header="派单日期" Binding="{Binding 派单日期,StringFormat={}{0:yyyy-M-d}}"/>
+                            <DataGridTextColumn Header="问题列表" 
+								Binding="{Binding 记录}"
+								ElementStyle="{StaticResource ResourceKey=DataGridWrap}" 
+								CanUserSort="False" MinWidth="500" Width="*"/>
+                            <DataGridTextColumn Header="受理单位" Binding="{Binding 受理单位}"/>
+                            <DataGridTemplateColumn Header="操作">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal"  >
+                                            <Button Content="编辑" 
+										        Margin="3" 										 
+										        Click="tzd_Edit" IsEnabled="False"/>
+                                            <Button Content="删除" 
+										        Margin="3" 										
+										        Click="tzd_Del" 
+                                            />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </TabItem>
+            </TabControl>
+
+        </Grid>
+        <!--  功能分割-->
+        <TabControl Margin="5" Grid.Column="0" SelectionChanged="TabControl_SelectionChanged"  >
+
+            <TabItem 
+                x:Name="tab_op" 
+                Header="查询" 
+                >
+                <Grid >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="250"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*" />
+
+                    </Grid.RowDefinitions>
+                    <ScrollViewer Grid.Row="0" 
+                                  VerticalScrollBarVisibility="Auto" 
+                                  Background="AliceBlue">
+                        <Grid x:Name="sp_test" Grid.Row="0" 
+						Background="AliceBlue" 						 
+						Selector.SelectionChanged="QueryCMB_Chg"
+                              Margin="5">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="20*"/>
+                                <RowDefinition Height="20*"/>
+                                <RowDefinition Height="20*"/>
+                                <RowDefinition Height="20*"/>
+                                <RowDefinition Height="20*"/>
+                                <RowDefinition Height="20*"/>
+                                <RowDefinition Height="20*"/>
+                                <RowDefinition Height="20*"/>
+                                <RowDefinition Height="20*"/>
+                                <RowDefinition Height="20*"/>
+                                <RowDefinition Height="20*"/>
+                            </Grid.RowDefinitions>
+                            <Label Content="站名" Margin="0,0,0.4,0" Grid.Row="0" />
+                            <ComboBox x:Name="init_zhname"  Tag="zhName" 
+                                       Margin="0,0,0.4,0" Grid.Row="1" />
+                            <Label Content="处理情况" Margin="0,0,0.4,0" Grid.Row="2" />
+                            <ComboBox Tag="doWith" Margin="0,0,0.4,0" Grid.Row="3" >
+                                <ComboBoxItem Content="未销记" />
+                                <ComboBoxItem Content="已销记" />
+                            </ComboBox>
+                            <Label Content="严重程度" Margin="0,0,0.4,0" Grid.Row="4" />
+                            <ComboBox Tag="Merge" Margin="0,0,0.4,0" Grid.Row="5" >
+                                <ComboBoxItem Content="严重" Background="Red"/>
+                                <ComboBoxItem Content="一般" Background="AliceBlue"/>
+                                <ComboBoxItem Content="观察" Background="YellowGreen"/>
+                            </ComboBox>
+                            <Label Content="受理单位" Margin="0,0,0.4,0" Grid.Row="6" />
+
+                            <ComboBox x:Name="init_unit" Tag="Unit" Margin="0,0,0.4,0" Grid.Row="7" />
+
+                            <Button  Content="重置查询"                                      
+                                     Click="Button_ResetQuery" Grid.Row="9"  />
+
+                        </Grid>
+                    </ScrollViewer>
+                    <Expander Grid.Row="1" Header="其他查询" Background="AliceBlue" Expanded="Expander_Expanded" >
+                        <Grid Height="110">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="10*"/>
+                                <RowDefinition Height="10*"/>
+                                <RowDefinition Height="10*"/>
+                                <RowDefinition Height="10*"/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0">
+                                <StackPanel Orientation="Horizontal" >
+                                    <RadioButton x:Name="Q_fx_flag"
+                                        Content="按发现时间" 
+                                                 VerticalAlignment="Center" 
+                                                 Margin="10,0,0,0" 
+                                                 IsChecked="True"/>
+                                    <RadioButton 
+                                        Content="按销记时间" 
+                                                 VerticalAlignment="Center"
+                                                 Margin="5,0,0,0"/>
+                                </StackPanel>
+                            </Grid>
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="60"/>
+                                    <ColumnDefinition Width="130*"/>
+                                </Grid.ColumnDefinitions>
+                                <!-- 开始时间 -->
+                                <TextBlock Text="开始日期" Grid.Column="0" VerticalAlignment="Center"/>
+                                <DatePicker x:Name="start_time" Grid.Column="1" VerticalAlignment="Center" SelectedDateChanged="start_time_SelectedDateChanged"></DatePicker>
+                            </Grid>
+                            <Grid Grid.Row="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="60"/>
+                                    <ColumnDefinition Width="130*"/>
+                                </Grid.ColumnDefinitions>
+                                <!-- 结束时间 -->
+                                <TextBlock Text="结束日期" Grid.Column="0" VerticalAlignment="Center"></TextBlock>
+                                <DatePicker x:Name="end_time" Grid.Column="1" VerticalAlignment="Center" SelectedDateChanged="end_time_SelectedDateChanged"/>
+                            </Grid>
+                            <Grid Grid.Row="3">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="20*"/>
+                                    <ColumnDefinition Width="10*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Grid.Column="0" x:Name="Qu_like"
+                                         Text="内容模糊查询" VerticalAlignment="Center"
+                                         GotFocus="Qu_like_GotFocus" LostFocus="Qu_like_LostFocus" 
+                                         Foreground="{DynamicResource {x:Static SystemColors.ScrollBarBrushKey}}"
+                                         />
+                                <Button x:Name="Like_Q" 
+                                        Grid.Column="1" 
+                                        Content="Go!" 
+                                        Click="Like_Q_Click" Height="28" VerticalAlignment="Top" Background="{DynamicResource grid_spite_brush}"
+                                        />
+                            </Grid>
+                        </Grid>
+                    </Expander>
+
+                    <ScrollViewer Grid.Row="2"  VerticalScrollBarVisibility="Auto"                                   
+                                   Background="AliceBlue"  >
+                        <TreeView   Background="AliceBlue"  >
+                            <TreeView.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="通知单导出" Click="show_pf"></MenuItem>
+                                    <MenuItem Header="数据库导出" Click="show_all"></MenuItem>                                    
+                                </ContextMenu>
+                            </TreeView.ContextMenu>
+                            <TreeViewItem x:Name="pfSelect"  
+								Header="派发信息" 
+								Selected="jd_tree_pf" Tag="F" Margin="0,10,0,0"  />
+                            <TreeViewItem x:Name="tzdSelect" 
+								Header="通知单信息" 
+								Selected="jd_tree_tzd" Tag="F" Margin="0,10,0,0"  />
+                        </TreeView>
+                    </ScrollViewer>
+                </Grid>
+            </TabItem>
+            <TabItem x:Name="tab_input" Header="录入"   >
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Grid x:Name="Re_rows"  Background="AliceBlue" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="18*"/>
+                            <RowDefinition Height="20*"/>
+                            <RowDefinition Height="18*"/>
+                            <RowDefinition Height="20*" />
+                            <RowDefinition Height="18*"/>
+                            <RowDefinition Height="35*"/>
+                            <RowDefinition Height="18*"/>
+                            <RowDefinition Height="20*"/>
+                            <RowDefinition Height="18*"/>
+                            <RowDefinition Height="20*"/>
+                            <RowDefinition Height="18*"/>
+                            <RowDefinition Height="20*"/>
+                            <RowDefinition Height="18*"/>
+                            <RowDefinition Height="20*"/>
+                            <RowDefinition Height="18*"/>
+                            <RowDefinition Height="20*"/>
+                            <RowDefinition Height="18*"/>
+                            <RowDefinition Height="20*"/>
+                            <RowDefinition Height="20*"/>
+                        </Grid.RowDefinitions>
+                        <Label Grid.Row="0" Content="站名" />
+                        <ComboBox Grid.Row="1" x:Name="Re_zn" IsEditable="True"  
+							SelectionChanged="Rec_zn_init"                                   
+							SelectedValue="{Binding 站名}" 
+							SelectedItem="{Binding 站名}" 
+							Text="{Binding 站名, Mode=TwoWay}" 
+                            Margin="3"
+                            Tag="Zn">
+                            <ComboBox.Background>
+                                <SolidColorBrush x:Name="Ani_zn" Color="White" />
+                            </ComboBox.Background>
+                        </ComboBox>
+                        <!--  设备名称必须进一步处理 ...  如果存在就读出 WT数据, 进行编辑. -->
+                        <Label Grid.Row="2"  Content="设备名称"  />
+                        <ComboBox Grid.Row="3"  x:Name="Re_eq"  
+                            IsEditable="True"
+							Text="{Binding 设备名称}" 
+                            Style="{DynamicResource ComboBoxStyle_TextBox}" 
+                            ItemsSource="{Binding str_eqName}" Margin="3" 
+                            Tag="eqName" 
+                            >
+                            <ComboBox.Background>
+                                <SolidColorBrush x:Name="Ani_eqName" Color="White" />
+                            </ComboBox.Background>
+                        </ComboBox>
+                        <Label x:Name="edit_tips" Grid.Row="4"  Content="存在问题" />
+                        <TextBox  Grid.Row="5"  
+                             x:Name="Re_eqfault"  
+                             TextWrapping="Wrap" 
+							 Text="{Binding 存在问题}" 
+                             Margin="3" 
+                             >
+                            <TextBox.Background>
+                                <SolidColorBrush x:Name="Ani_eqFault" Color="White" />
+                            </TextBox.Background>
+                        </TextBox>
+                        <!-- 日历选择控件的怪异行为  ?? -->
+                        <Label Grid.Row="6"  Content="检查时间(发现问题)" />
+                        <DatePicker Grid.Row="7"  x:Name="Re_date" 
+	                        FirstDayOfWeek="Monday" Margin="3" 
+                            SelectedDate="{Binding 发现时间, Mode=TwoWay}" 
+                            Style="{DynamicResource DatePickerStyle_TextPick_event}" >
+                            <DatePicker.Background>
+                                <SolidColorBrush x:Name="Ani_checkDate" Color="White" />
+                            </DatePicker.Background>
+                        </DatePicker>
+                        <!-- 日历选择控件的怪异行为  ?? -->
+                        <Label Grid.Row="8"  Content="检查人" />
+                        <ComboBox Grid.Row="9"  x:Name="Re_who" IsEditable="True"
+							Style="{DynamicResource ComboBoxStyle_TextBox}"                                 
+							Text="{Binding  检查人, Mode=TwoWay}" 
+                            ItemsSource="{Binding str_checker}"  Margin="3" />
+                        <Label Grid.Row="10"  Content="天窗需求" />
+                        <TextBox Grid.Row="11"  x:Name="Re_loc" 
+							Text="{Binding  天窗需求, Mode=TwoWay}"  Margin="3"/>
+                        <Label Grid.Row="12"  Content="严重等级" />
+                        <ComboBox Grid.Row="13"  x:Name="Re_merge"                                   
+                                  Text="{Binding  严重程度}" Margin="3" >
+                            <ComboBoxItem Content="严重" Background="Red"/>
+                            <ComboBoxItem Content="一般" Background="AliceBlue"/>
+                            <ComboBoxItem Content="观察" Background="YellowGreen"/>
+                        </ComboBox>
+                        <Label Grid.Row="14" Content="受理单位"></Label>
+                        <ComboBox x:Name="Re_unit" Grid.Row="15" IsEditable="True"
+							Style="{DynamicResource ComboBoxStyle_TextBox}"                                 
+							Text="{Binding  受理单位, Mode=TwoWay}" 
+                            ItemsSource="{Binding str_unit}"  Margin="3" />
+                        <Label Grid.Row="16"  Content="备注" />
+                        <TextBox Grid.Row="17"  
+                             TextWrapping="Wrap" 
+                             Text="{Binding  备注, Mode=TwoWay}" Margin="3" />
+                        <Button Grid.Row="18" Content="确定" 														                                
+							Click="Record_Click" Margin="3"/>
+                    </Grid>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem  Header="通知单" >
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="90*"/>
+                    </Grid.RowDefinitions>
+                    <Border Grid.Row="0" Margin="2"   >
+                        <Expander Header="微调打印页面" BorderBrush="{DynamicResource fram_brush}" IsExpanded="True"  >
+                            <Grid Height="80" Margin="0,0,0.2,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="11*"/>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="11*"/>
+                                </Grid.RowDefinitions>
+
+                                <StackPanel Grid.Row="0" Orientation="Horizontal" >
+                                    <TextBlock Text="字号调整" Width="60" VerticalAlignment="Center" />
+                                    <Button Content="+" Width="30" Height="30" Click="Button_Click" />
+                                    <Button Content="-" Width="30" Height="30" Click="Button_Click_1"/>
+                                    
+                                </StackPanel>
+                                <StackPanel Grid.Row="2" Orientation="Horizontal" >
+                                    <TextBlock Text="项目数      " VerticalAlignment="Center" /> 
+                                    <ComboBox x:Name="ItemCount" Height="30" Width="40" SelectionChanged="ItemCount_SelectionChanged" HorizontalAlignment="Center" VerticalAlignment="Center" SelectedIndex="8" >
+                                        <System:Int16>5</System:Int16>
+                                        <System:Int16>6</System:Int16>
+                                        <System:Int16>7</System:Int16>
+                                        <System:Int16>8</System:Int16>
+                                        <System:Int16>9</System:Int16>
+                                        <System:Int16>10</System:Int16>
+                                        <System:Int16>11</System:Int16>
+                                        <System:Int16>12</System:Int16>
+                                        <System:Int16>13</System:Int16>
+                                        <System:Int16>14</System:Int16>
+                                        <System:Int16>15</System:Int16>
+                                        <System:Int16>16</System:Int16>
+                                        <System:Int16>17</System:Int16>
+                                        <System:Int16>18</System:Int16>
+                                        <System:Int16>19</System:Int16>
+                                        <System:Int16>20</System:Int16>
+                                        <System:Int16>21</System:Int16>
+                                        <System:Int16>22</System:Int16>
+                                        <System:Int16>23</System:Int16>
+                                        <System:Int16>24</System:Int16>
+                                        <System:Int16>25</System:Int16>
+                                        <System:Int16>26</System:Int16>
+                                        
+                                    </ComboBox>
+                                    <Button x:Name="TzdPagePre" Content="上一页" Height="30" Click="pagePre" IsEnabled="False"/>
+                                    <Button x:Name="TzdPageNext" Content="下一页" Height="30" Click="pageNext" IsEnabled="False"/>
+                                </StackPanel>
+                            </Grid>
+
+                        </Expander>
+                    </Border>
+                    <ScrollViewer Grid.Row="1" Margin="5" VerticalScrollBarVisibility="Auto">
+                        <Grid >
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="10*" MinHeight="25" MaxHeight="30"/>
+                                <RowDefinition Height="90*"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" Orientation="Horizontal"   Margin="3,0"  >
+                                <Label Content="通知单信息 "  Margin="0,0,0,0"  />
+                                <Button Content="刷新"  Click="Button_Click_tzdFresh" Margin="40,0,0,0" Height="20"/>
+                            </StackPanel>
+                            <TreeView Grid.Row="1" x:Name="tzdTree" 
+								Margin="3" 
+								TreeViewItem.Expanded="tzdTreeExp" 
+								TreeViewItem.Selected="tzdTree_slt"  />
+                        </Grid>
+                    </ScrollViewer>
+                </Grid>
+            </TabItem>
+            <TabItem Header="派发表"  >
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="90*" />
+                    </Grid.RowDefinitions>
+                    <Border Grid.Row="0"  Margin="2"   >
+                        <Expander Header="微调打印页面" BorderBrush="{DynamicResource fram_brush}"  >
+                            <StackPanel Orientation="Horizontal" Height="40">
+                                <TextBlock Text="字号调整" VerticalAlignment="Center" Width="70"/>
+                                <Button Content="+" Width="30" Height="30" Click="Button_Click_2"></Button>
+                                <Button Content="-" Width="30" Height="30" Click="Button_Click_3"></Button>
+                            </StackPanel>
+
+                        </Expander>
+                    </Border>
+                    <ScrollViewer  Grid.Row="1" Margin="5" VerticalScrollBarVisibility="Auto" >
+                        <Grid >
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="10*" MinHeight="25" MaxHeight="30"/>
+                                <RowDefinition Height="90*"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" Orientation="Horizontal"   Margin="3,0"  >
+                                <Label Content="派发信息 "  />
+                                <Button Content="刷新" Click="Button_Click_pfFresh" Margin="50,0,0,0" Height="20"  />
+                            </StackPanel>
+                            <TreeView Grid.Row="1" x:Name="pfTree" Margin="3,3,2.8,3.2"  TreeViewItem.Expanded="pfTreeExp" TreeViewItem.Selected="pftree_slt"   />
+                        </Grid>
+                    </ScrollViewer>
+                </Grid>
+            </TabItem>
+        </TabControl>
+        <Grid x:Name="docPF" Grid.Column="2" Margin="5"    >
+            <!-- 这里安排文档窗口. -->
+
+            <FlowDocumentScrollViewer
+                VerticalScrollBarVisibility="Auto"
+                HorizontalScrollBarVisibility="Disabled"
+        		
+        		BorderThickness="0" 
+        		HorizontalContentAlignment="Stretch" 
+        		VerticalContentAlignment="Stretch" MaxHeight="700" 
+                MinHeight="500"    >
+
+                <FlowDocument x:Name="myDocpf" >
+                    <FlowDocument.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Command="ApplicationCommands.Print" />
+                            <MenuItem  Header="导出EXCEL" Click="savePf_MenuItem_Click"/>
+                        </ContextMenu>
+                    </FlowDocument.ContextMenu>
+                    <Paragraph Padding="1" MinWidowLines="1"   >
+                        <InlineUIContainer>
+                            <Border Margin="30,50,30,0"    >
+                                <Grid x:Name="pfgrid" MinWidth="610" MinHeight="900">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="40"/>
+                                        <RowDefinition Height="60"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="120"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid Grid.Row="0">
+                                        <Border>
+                                            <TextBox Text="车工电联合检查整治表(   周)" 
+        										HorizontalAlignment="Center" 
+        										VerticalAlignment="Center"
+        										FontSize="26" FontWeight="Bold" BorderThickness="0"/>
+                                        </Border>
+                                    </Grid>
+                                    <Grid Grid.Row="1" Margin="0,20,0,0" >
+                                        <Border >
+                                            <TextBox x:Name="doc_zz_tabHeader" 
+                                                       FontSize="16"                                                    
+                                                        VerticalAlignment="Center" 
+                                                       HorizontalAlignment="Left"  
+                                                       TextWrapping="WrapWithOverflow" BorderThickness="0"  
+                                                        
+                                                     >
+                                                ____________，经对____ 站结合部设备问题收集，存在下列问题，计划下周整治,请按计划时间准备人力、料具到现场共同配合.
+                                            </TextBox>
+                                        </Border>
+                                    </Grid>
+                                    <Grid  Grid.Row="2" Margin="0,20,0,0"  >
+                                        <DataGrid x:Name="docPfdataGrid"   Background="White"
+        									AutoGenerateColumns="False" 
+                                                  IsReadOnly="True" 
+                                                  FontSize="16" MaxHeight="800"
+                                                   
+                                                  LoadingRow="docPfdataGrid_LoadingRow" 
+                                                  RowHeaderWidth="25"  BorderThickness="1.5" BorderBrush="Black"
+                                                  RowBackground="White" HorizontalScrollBarVisibility="Disabled" Height="720"                                                     
+                                                  >
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Binding="{Binding 设备名称 }"
+        											Header="设备名称"
+                                                    Width="120" 
+                                                    ElementStyle="{Binding Mode=OneWay, Source={StaticResource DataGridWrap}}"               
+                                                                    />
+                                                <DataGridTextColumn Binding="{Binding 存在问题}" 
+        											Header="存在问题" Width="200*"
+                                                    ElementStyle="{StaticResource DataGridWrap}" MaxWidth="200" MinWidth="200"  />
+                                                <DataGridTextColumn Binding="{Binding  保留2}" 
+        											Header="整治方案"
+                                                     ElementStyle="{StaticResource DataGridWrap}" Width="100"   />
+                                                <DataGridTextColumn Binding="{Binding 计划时间,StringFormat={}{0:yyyy-M-d}}" 
+        											Header="计划时间"  />
+                                                <DataGridTextColumn 
+        											Header="整治情况" MaxWidth="120"  />
+                                                <DataGridTextColumn  
+        											Header="负责人" Width="100*"  />
+                                            </DataGrid.Columns>
+
+                                        </DataGrid>
+                                    </Grid>
+                                    <Grid Grid.Row="3">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="200*"/>
+                                            <ColumnDefinition Width="487*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border Grid.Column="0" BorderBrush="Black" BorderThickness="1,0,1,1">
+                                            <Grid >
+                                                <TextBlock Text="站区负责人签字:" HorizontalAlignment="Center" VerticalAlignment="Top" Padding="0,20,0,0"/>
+                                            </Grid>
+                                        </Border>
+                                        <Border Grid.Column="1" BorderBrush="Black" BorderThickness="0,0,1,1">
+                                            <Grid >
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="20*"/>
+                                                    <RowDefinition Height="20*"/>
+                                                    <RowDefinition Height="20*"/>
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Grid.Row="0" Text="   车务:" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Row="1" Text="   工务:" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Row="2" Text="   电务:" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Border>
+                                    </Grid>
+                                </Grid>
+                            </Border>
+                        </InlineUIContainer>
+                    </Paragraph>
+                </FlowDocument>
+            </FlowDocumentScrollViewer>
+        </Grid>
+        <StatusBar x:Name="StatusTip" Grid.Row="1"  Background="Beige">
+            <Separator Width="5" Background="{DynamicResource grid_spite_brush}" />
+
+            <ContentControl BorderThickness="1" BorderBrush="Black" >总记录:</ContentControl>
+            <Border  BorderThickness="1" BorderBrush="LightGray">
+                <TextBlock Text="{Binding Total}" />
+            </Border>
+
+        </StatusBar>
+        <StatusBar x:Name="StatusTip1" 
+                   Grid.Row="1" 
+                   Grid.Column="2" 
+                   Background="Beige" 
+                   Width="{Binding ActualWidth, ElementName=view1, Mode=OneWay}"                   
+                    >
+            <Grid  Width="{Binding ActualWidth, ElementName=view1, Mode=OneWay}" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="8*"/>
+                    <ColumnDefinition Width="5*"/>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="8*"/>
+                    <ColumnDefinition Width="10*"/>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="5*"/>
+                    <ColumnDefinition Width="55*"/>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="25*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="查询结果:" VerticalAlignment="Center" ></TextBlock>
+                <Border Grid.Column="1" BorderThickness="1" BorderBrush="LightGray">
+                    <TextBlock   Text="{Binding Query}"  VerticalAlignment="Center"/>
+                </Border>
+                <Border Grid.Column="2"    Width="1"  Background="Black"/>
+                <TextBlock Grid.Column="3" Text="操作提示:" VerticalAlignment="Center" />
+                <Border Grid.Column="4" BorderThickness="1" BorderBrush="LightGray">
+                    <TextBlock Grid.Column="4" Text="{Binding Tip}"  ></TextBlock>
+                </Border>
+                <Border Grid.Column="5" Width="1"  Background="Black"/>
+                <TextBlock Grid.Column="6" Text="信息:" VerticalAlignment="Center" />
+                <Border Grid.Column="7" BorderThickness="1" BorderBrush="LightGray">
+                    <TextBlock Grid.Column="7" Text="{Binding OtherTip}"  VerticalAlignment="Center" />
+                </Border>
+                <Border Grid.Column="8"  Width="1" Background="Black"/>
+                <Border Grid.Column="9" BorderThickness="1" BorderBrush="LightGray">
+                    <TextBlock Grid.Column="9" Text="{Binding Clock}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+            </Grid>
+        </StatusBar>
+    </Grid>
+
+</Window>

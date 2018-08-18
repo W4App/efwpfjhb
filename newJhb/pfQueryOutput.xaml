@@ -1,0 +1,93 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:newJhb" x:Class="newJhb.pfQueryOutput"
+        Title="pfQueryOutput" Height="556" Width="1024" Loaded="Window_Loaded">
+    <Window.Resources>
+        <LinearGradientBrush x:Key="grid_spite_brush" EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+            <GradientStop Color="#FF0E0F0F"/>
+            <GradientStop Color="#FFCFCEBD" Offset="0.25"/>
+            <GradientStop Color="#FFD5EBEC" Offset="0.5"/>
+            <GradientStop Color="#FF9EC7CA" Offset="0.75"/>
+            <GradientStop Color="#FF819F9D" Offset="0.95"/>
+        </LinearGradientBrush>
+        <Style  x:Key="DataGridWrap"   TargetType="{x:Type TextBlock}">
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
+    </Window.Resources>
+    <Grid >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="20*"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="100*"/>
+        </Grid.ColumnDefinitions>
+        <GridSplitter Width="5" Grid.Column="1" Background="{DynamicResource grid_spite_brush}" HorizontalContentAlignment="Stretch"  />
+
+        <Grid Background="AliceBlue" Margin="5" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="20*"/>
+                <RowDefinition Height="20*"/>
+                <RowDefinition Height="20*"/>
+                <RowDefinition Height="20*"/>
+                <RowDefinition Height="20*"/>
+                <RowDefinition Height="20*"/>
+                <RowDefinition Height="20*"/>
+                <RowDefinition Height="20*"/>
+                <RowDefinition Height="20*"/>
+                <RowDefinition Height="20*"/>
+                <RowDefinition Height="20*"/>
+                <RowDefinition Height="20*"/>
+                <RowDefinition Height="20*"/>
+                <RowDefinition Height="100*"/>
+            </Grid.RowDefinitions>
+            <Label Content="站名" Margin="0,0,0.4,0" Grid.Row="1" VerticalAlignment="Center" />
+            <ComboBox x:Name="pfZn" 
+				Margin="0,0,0.4,0" Grid.Row="2" SelectionChanged="init_zhname_SelectionChanged" />
+            <Label Content="选择时间节点"  Grid.Row="3" VerticalAlignment="Center" />
+            <TextBlock Text="开始日期" Grid.Row="4" VerticalAlignment="Center"/>
+            <DatePicker x:Name="start_time" Grid.Row="5" VerticalAlignment="Center" SelectedDateChanged="start_time_SelectedDateChanged"/>
+            <TextBlock Text="结束日期" Grid.Row="6" VerticalAlignment="Center"/>
+            <DatePicker x:Name="end_time" Grid.Row="7" VerticalAlignment="Center" SelectedDateChanged="end_time_SelectedDateChanged"/>
+            <Button Content="重置查询"                                      
+				Click="Button_ResetQuery" Grid.Row="9"  />
+            <Button Content="导出文件" Grid.Row="11" Click="Button_Click" />
+        </Grid>
+
+        <Grid x:Name="view1" Grid.Column="2" Margin="5" >
+            <DataGrid x:Name="showSelectPfGrid"  
+				CanUserAddRows="False"   
+				AutoGenerateColumns="False" AlternationCount="2"
+				IsReadOnly="True" 
+				ClipboardCopyMode="None"      
+				AlternatingRowBackground="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                RowHeaderWidth="25">
+                <DataGrid.DataContext>
+                    <local:PF/>
+                </DataGrid.DataContext>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="下发日期" 
+                                        Binding="{Binding 派发日期,StringFormat=\{0:yyyy-M-d\}}"
+                                        
+                                        />
+                <DataGridTextColumn Header="车站" Binding="{Binding 站名}"/>
+                <DataGridTextColumn Header="设备名称" Binding="{Binding 设备名称}" MaxWidth="60"
+                                    ElementStyle="{StaticResource DataGridWrap}"
+                                    />
+                    <DataGridTextColumn Header="作业内容" 
+                                    Binding="{Binding 存在问题}"
+                                    ElementStyle="{StaticResource DataGridWrap}" MaxWidth="160" />
+                    <DataGridTextColumn Header="计划作业日期" Binding="{Binding 计划时间,StringFormat=\{0:yyyy-M-d\}}"/>
+                <DataGridTextColumn Header="施工单位" Binding="{Binding 站名}"/>
+                <DataGridTextColumn Header="配合单位" Binding="{Binding 受理单位}"/>
+                <DataGridTextColumn Header="配合单位签认日期"/>
+                <DataGridTextColumn Header="完成日期" Binding="{Binding ver1,StringFormat=\{0:yyyy-M-d\}}"/>
+                <DataGridTextColumn Header="作业人员" Binding="{Binding var4}"/>
+                <DataGridTextColumn Header="盯控干部"/>
+                <DataGridTextColumn Header="完成情况" Binding="{Binding ver2}"/>
+                <DataGridTextColumn Header="配合单位是否签字"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            <!--派发显示项目-->
+        </Grid>
+    </Grid>
+</Window>

@@ -1,0 +1,20 @@
+﻿<Window x:Class="newJhb.detail_show"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="通知情况" Height="300" Width="485" WindowStyle="ToolWindow" Loaded="Window_Loaded" WindowStartupLocation="CenterOwner">
+    <FlowDocumentScrollViewer Background="AliceBlue" VerticalScrollBarVisibility="Auto">
+        <FlowDocument Background="AliceBlue" >
+            <Paragraph FontSize="12" >
+                <Button IsCancel="True" IsDefault="True"></Button>
+                <Run x:Name="cnt" Text="信息:"/>
+                
+            </Paragraph>
+            <List x:Name="Lst" MarkerStyle="Square" FontSize="12" >
+                
+            </List>
+            
+        </FlowDocument> 
+        
+    </FlowDocumentScrollViewer>
+    
+</Window>

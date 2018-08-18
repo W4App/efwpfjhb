@@ -1,0 +1,103 @@
+﻿<Window x:Class="newJhb.pfDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="输入信息" Height="150" Width="500" 
+        ShowInTaskbar="False" 
+        WindowStartupLocation="CenterOwner" 
+        HorizontalContentAlignment="Stretch" 
+        VerticalContentAlignment="Stretch" 
+        Background="AliceBlue" MinWidth="316" 
+        MinHeight="50" 
+        ResizeMode="NoResize" Loaded="Window_Loaded"         
+        
+        >
+    <Grid  Background="AliceBlue" Margin="2">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70*"/>
+            <RowDefinition Height="30*"/>
+            <RowDefinition Height="40*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="30*"/>
+            <ColumnDefinition Width="30*"/>
+            <ColumnDefinition Width="30*"/>
+            <ColumnDefinition Width="30*"/>
+            <ColumnDefinition Width="10*"/>
+        </Grid.ColumnDefinitions>
+        <Border Grid.Column="0" Grid.Row="1" BorderThickness="1,1,0,0" BorderBrush="Black" >
+            <TextBlock Text="派单日期" Height="16" Width="48" />
+        </Border>
+        <Border Grid.Column="1" Grid.Row="1" 
+        	 BorderThickness="1,1,0,0" BorderBrush="Black">
+            <TextBlock Text="受理单位" Height="16" Width="48" />
+        </Border>
+        <Border Grid.Column="2" Grid.Row="1" 
+        	 BorderThickness="1,1,0,0" BorderBrush="Black">
+            <TextBlock Text="计划日期" Height="16" Width="48" />
+        </Border>
+        <Border Grid.Column="3" Grid.Row="1"
+        	 BorderThickness="1,1,1,0" BorderBrush="Black">
+            <TextBlock Text="整治方案" Height="16" Width="48" />
+
+
+        </Border>
+        <Border Grid.Column="0" Grid.Row="2" 
+        	
+    		BorderThickness="1,1,0,1" BorderBrush="Black">
+
+
+            <DatePicker 
+        		x:Name="pdDate" GotFocus="pdDate_GotFocus" Height="24" Margin="0,0,-0.8,0">
+                <DatePicker.Background>
+                    <SolidColorBrush x:Name="Ani_pdDate" Color="White"/>
+                </DatePicker.Background>
+            </DatePicker>
+
+        </Border>
+        <Border Grid.Column="1"   Grid.Row="2" 
+        	 BorderThickness="1,1,0,1" BorderBrush="Black">
+
+            <ComboBox IsEditable="True" 
+        		x:Name="pdUnit" GotFocus="pdUnit_GotFocus"
+                  Height="22" Margin="0,0,-0.8,0"
+                  >
+                <ComboBox.Background>
+                    <SolidColorBrush x:Name="Ani_pdUnit" Color="White"/>
+                </ComboBox.Background>
+            </ComboBox>
+        </Border>
+        <Border Grid.Column="2"   Grid.Row="2" 
+        	
+    		BorderThickness="1,1,0,1" BorderBrush="Black">
+            <DatePicker 
+        		x:Name="planDate" GotFocus="planDate_GotFocus" Height="24" Margin="0,0,0.8,0" >
+                <DatePicker.Background>
+                    <SolidColorBrush x:Name="Ani_planDate" Color="White"/>
+                </DatePicker.Background>
+            </DatePicker>
+        </Border>
+        <Border Grid.Column="3"   Grid.Row="2" 
+        	BorderThickness="1" BorderBrush="Black">
+            <ComboBox IsEditable="True" 
+        		x:Name="PlanFix" GotFocus="PlanFix_GotFocus" Height="22" >
+                <ComboBox.Background>
+                    <SolidColorBrush x:Name="Ani_planFix" Color="White"/>
+                </ComboBox.Background>
+            </ComboBox>
+        </Border>
+        <Button Content="取消"  Grid.Column="4" Grid.Row="1" 
+    		Margin="1"
+    		Click="Button_Click_1" IsCancel="True" />
+        <Button Content="确定"  Grid.Column="4" Grid.Row="2"
+    		Margin="1,3" Click="Button_Click" IsDefault="True"/>
+        <Border Grid.ColumnSpan="5"  Grid.Row ="0" Margin="3" BorderBrush="Aqua" BorderThickness="1">
+            <StackPanel Margin="0.2,0.2,-0.6,0.2" Orientation="Vertical">
+                <TextBlock x:Name="run_1" TextWrapping="WrapWithOverflow" Text="设备名称:" />
+                <TextBlock x:Name="run_2" TextWrapping="WrapWithOverflow" Text="存在问题:" />
+                <TextBlock x:Name="run_3" TextWrapping="WrapWithOverflow" Text="受理单位:" />
+            </StackPanel>
+        </Border>
+
+    </Grid>
+
+</Window>
